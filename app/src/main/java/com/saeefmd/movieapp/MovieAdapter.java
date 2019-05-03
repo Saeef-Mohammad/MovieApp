@@ -1,6 +1,7 @@
 package com.saeefmd.movieapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,7 +50,11 @@ public class MovieAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
 
+                int movieId = movieList.get(i).getId();
 
+                Intent intent = new Intent(context, MovieDetailsActivity.class);
+                intent.putExtra("movieId", movieId);
+                context.startActivity(intent);
             }
         });
 
