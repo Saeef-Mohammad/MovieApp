@@ -5,8 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.saeefmd.movieapp.NetworkUtilities.NetworkUtilis;
@@ -29,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     String movieUrl;
 
+    int pageNumber;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,14 +50,16 @@ public class MainActivity extends AppCompatActivity {
         //progressDialog.setTitle("Loading...");
         //progressDialog.setMessage("Please wait!");
 
-        new MyAsyncTask().execute();
+        pageNumber = 1;
+
+        movieUrl = "https://api.themoviedb.org/3/movie/top_rated?" +
+                "api_key=f4fb3ff04d69e51db7c6d14a713fb643&language=en-US&page=";
+
+        new MyAsyncTask(movieUrl + pageNumber).execute();
 
     }
 
-    public String getDataFromApi() {
-
-        movieUrl = "https://api.themoviedb.org/3/movie/top_rated?" +
-                "api_key=f4fb3ff04d69e51db7c6d14a713fb643&language=en-US&page=1";
+    public String getDataFromApi(String movieUrl) {
 
         try {
 
@@ -69,10 +77,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class MyAsyncTask extends AsyncTask {
+
+        String url;
+
+        public MyAsyncTask(String url) {
+            this.url = url;
+        }
+
         @Override
         protected Object doInBackground(Object[] objects) {
 
-            data = getDataFromApi();
+            data = getDataFromApi(url);
 
             movieData = new Gson().fromJson(data, MovieData.class);
 
@@ -99,5 +114,41 @@ public class MainActivity extends AppCompatActivity {
 
             //progressDialog.dismiss();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.menu_next_page:
+
+                pageNumber += 1;
+
+                if (pageNumber <= movieData.getTotalPages()) {
+                    new MyAsyncTask(movieUrl + pageNumber).execute();
+                } else {
+                    Toast.makeText(this, "No more movies!", Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
+
+            case R.id.menu_first_page:
+
+                pageNumber = 1;
+                new MyAsyncTask(movieUrl + pageNumber).execute();
+
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
