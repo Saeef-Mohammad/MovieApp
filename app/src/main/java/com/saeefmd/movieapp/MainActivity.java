@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
+import com.saeefmd.movieapp.NetworkUtilities.NetworkUtilis;
 
 import java.io.IOException;
 
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     //ProgressDialog progressDialog;
 
     ProgressBar progressBar;
+
+    String movieUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +48,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public String getDataFromApi(String url) throws IOException {
+    public String getDataFromApi() {
 
-        OkHttpClient client = new OkHttpClient();
+        movieUrl = "https://api.themoviedb.org/3/movie/top_rated?" +
+                "api_key=f4fb3ff04d69e51db7c6d14a713fb643&language=en-US&page=1";
 
-        Request request = new Request.Builder()
-                    .url(url)
-                    .build();
+        try {
 
-        try (Response response = client.newCall(request).execute()) {
-                return response.body().string();
-            }
+            NetworkUtilis networkUtilis = new NetworkUtilis(movieUrl);
+
+            return networkUtilis.getData();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return null;
 
     }
 
@@ -63,14 +72,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(Object[] objects) {
 
-            try {
-                data = getDataFromApi("https://api.themoviedb.org/3/movie/top_rated?api_key=f4fb3ff04d69e51db7c6d14a713fb643&language=en-US&page=1");
+            data = getDataFromApi();
 
-                movieData = new Gson().fromJson(data, MovieData.class);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            movieData = new Gson().fromJson(data, MovieData.class);
 
             return null;
         }
