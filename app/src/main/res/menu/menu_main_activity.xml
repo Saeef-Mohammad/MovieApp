@@ -5,6 +5,10 @@
         android:title="Next Page" />
 
     <item
+        android:id="@+id/menu_previous_page"
+        android:title="Previous Page" />
+
+    <item
         android:id="@+id/menu_first_page"
-        android:title="First Page" />
+        android:title="First Page"/>
 </menu>

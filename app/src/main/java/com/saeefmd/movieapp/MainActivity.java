@@ -1,6 +1,12 @@
 package com.saeefmd.movieapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MovieData movieData;
 
-    //ProgressDialog progressDialog;
-
     ProgressBar progressBar;
 
     String movieUrl;
@@ -45,15 +49,11 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progress_bar);
 
-        //progressDialog = new ProgressDialog(this);
-        //progressDialog.setCancelable(false);
-        //progressDialog.setTitle("Loading...");
-        //progressDialog.setMessage("Please wait!");
-
         pageNumber = 1;
 
         movieUrl = "https://api.themoviedb.org/3/movie/top_rated?" +
                 "api_key=f4fb3ff04d69e51db7c6d14a713fb643&language=en-US&page=";
+
 
         new MyAsyncTask(movieUrl + pageNumber).execute();
 
@@ -99,8 +99,6 @@ public class MainActivity extends AppCompatActivity {
             super.onPreExecute();
 
             progressBar.setVisibility(View.VISIBLE);
-
-            //progressDialog.show();
         }
 
         @Override
@@ -111,8 +109,6 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setAdapter(movieAdapter);
 
             progressBar.setVisibility(View.GONE);
-
-            //progressDialog.dismiss();
         }
     }
 
@@ -134,11 +130,25 @@ public class MainActivity extends AppCompatActivity {
                 pageNumber += 1;
 
                 if (pageNumber <= movieData.getTotalPages()) {
+
                     new MyAsyncTask(movieUrl + pageNumber).execute();
+
                 } else {
                     Toast.makeText(this, "No more movies!", Toast.LENGTH_SHORT).show();
                 }
 
+                return true;
+
+            case R.id.menu_previous_page:
+
+                if (pageNumber > 1) {
+
+                    pageNumber -= 1;
+                    new MyAsyncTask(movieUrl + pageNumber).execute();
+
+                } else {
+                    Toast.makeText(this, "This is the first page!", Toast.LENGTH_SHORT).show();
+                }
                 return true;
 
             case R.id.menu_first_page:
