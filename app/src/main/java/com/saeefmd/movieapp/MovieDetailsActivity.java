@@ -149,7 +149,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             // Getting genres and set to textview
             String genres = "";
             for (int i=0; i<movieGenre.size(); i++) {
-                genres = genres + movieGenre.get(i).getName() + ", ";
+                genres = new StringBuilder().append(genres).append(movieGenre.get(i).getName()).append(", ").toString();
             }
             genres = genres.replaceAll(", $", ""); // replacing the ending comma
             movieInfoGenre.setText("Genres : " + genres);
@@ -159,7 +159,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             String companies = "";
             for (int i=0; i<movieCompanies.size(); i++) {
-                companies = companies + movieCompanies.get(i).getName() + ", ";
+                companies = new StringBuilder().append(companies).append(movieCompanies.get(i).getName()).append(", ").toString();
             }
             companies = companies.replaceAll(", $", "");
             movieInfoCompanies.setText("Production Companies : " + companies);
