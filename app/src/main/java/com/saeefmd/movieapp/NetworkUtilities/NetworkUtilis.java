@@ -1,6 +1,9 @@
 package com.saeefmd.movieapp.NetworkUtilities;
 
+import org.apache.http.conn.ConnectTimeoutException;
+
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -25,6 +28,10 @@ public class NetworkUtilis {
         try (Response response = client.newCall(request).execute()) {
             return response.body().string();
 
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+        } catch (ConnectTimeoutException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
