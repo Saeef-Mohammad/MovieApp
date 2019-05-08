@@ -26,8 +26,6 @@ public class LauncherActivity extends Activity {
         } else {
 
             alertDialogBuilder();
-
-
         }
 
     }
